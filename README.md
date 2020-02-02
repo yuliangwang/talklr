@@ -7,6 +7,8 @@ library(devtools)
 install_github("yuliangwang/talklr")
 library(talklr)
 ```
+You can follow the tutorial below to get started using talklr on your single cell RNA-seq data (or bulk RNA-seq of purified cells):  
+https://rpubs.com/wang341/570900  
 Now talklr is ready for use!  
 Alternatively, you can use the talklr Shiny App that does not require any programming experience. talklr App is available at:  
 https://yuliangwang.shinyapps.io/talklr/
