@@ -1,0 +1,76 @@
+---
+title: "talklr_workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{talklr_workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(talklr)
+library(dplyr)
+```
+
+##Single condition mode##
+The code below will read in a tab-separated expression table (first column is gene symbol,and remaining columns are mean expression values for each cell type). 
+The expression values must be normalized for sequencing depth, but no need to normalize for gene length. The data __MUST NOT__ be log2 transformed.  
+```{r,cache=T}
+library(talklr)
+glom_normal<-read.table(system.file("extdata", "glom_normal_data.txt", package = "talklr"),header=T,sep="\t",stringsAsFactors =F)
+
+lr_glom_normal<-make_expressed_net(glom_normal,4,receptor_ligand,'product',1)
+lr_glom_normal<-arrange(lr_glom_normal,desc(KL))
+head(lr_glom_normal)
+```
+We can then visualize the ligand-receptor wiring diagram for any of the top ligand-receptor pairs identified by talklr.  
+```{r}
+plot_lr_wiring(as.numeric(lr_glom_normal[1,17:19]),as.numeric(lr_glom_normal[1,20:22]),c("podo","mesa","endo"))
+
+plot_lr_wiring(as.numeric(lr_glom_normal[2,17:19]),as.numeric(lr_glom_normal[2,20:22]),c("podo","mesa","endo"))
+```  
+
+###Optional: comparison with differentially expressed gene-based approach  
+Typically, studies restrict ligand-receptor pairs to genes expressed 3 fold higher in one cell type compared to each of the other cell types, in other words, cell type marker genes.  
+In normal glomerulus, there are 198 such ligand-receptor pairs.  
+```{r,cache=T}
+lr_deg_glom_normal<-make_deg_net(glom_normal,lr_glom_normal,3,1)
+nrow(lr_deg_glom_normal)
+head(lr_deg_glom_normal)
+```
+##Two condition mode##
+In the two condition mode, we will have one expression table for each condition. We will first identify a set of genes expressed in at least one cell type in either condition, and restrict ligand-receptor pairs to those expressed genes.  
+```{r,cache=T}
+glom_normal<-read.table(system.file("extdata", "glom_normal_data.txt", package = "talklr"),header=T,sep="\t",stringsAsFactors =F)
+glom_fsgs<-read.table(system.file("extdata", "glom_fsgs_data.txt", package = "talklr"),header=T,sep="\t",stringsAsFactors =F)
+expressed_normal<-rowSums(glom_normal[,2:ncol(glom_normal)]>4)>=1
+expressed_fsgs<-rowSums(glom_fsgs[,2:ncol(glom_fsgs)]>4)>=1
+expressed_genes<-glom_normal$genes[expressed_normal|expressed_fsgs]
+```
+
+We will then identify interesting ligand receptor pairs for each condition, and then identify ligand-receptor pairs that changed between two conditions.  
+```{r, cache=T}
+normal_net<-make_expressed_net_specify_expressed_genes(glom_normal,expressed_genes,receptor_ligand,'product')
+fsgs_net<-make_expressed_net_specify_expressed_genes(glom_fsgs,expressed_genes,receptor_ligand,'product')
+normal_net$fsgs_vs_normal_KL<-disease_vs_normal_KL(fsgs_net[,17:19],fsgs_net[,20:22],normal_net[,17:19],normal_net[,20:22],1,'produt')
+perturbed_net<-arrange(normal_net,desc(fsgs_vs_normal_KL))
+head(perturbed_net)
+```
+Finally, we can then visualize rewiring of ligand-receptor pairs between two conditions.  
+```{r,fig.width=6}
+pair2plot<-'CCL2_ACKR2' 
+par(mfrow=c(1,2))
+par(mar = c(0.3, 0.3, 0.3, 0.3))
+plot_lr_wiring(as.numeric(normal_net[normal_net$Pair.Name==pair2plot,17:19]),as.numeric(normal_net[normal_net$Pair.Name==pair2plot,20:22]),c("podo","mesa","endo"))
+
+plot_lr_wiring(as.numeric(fsgs_net[fsgs_net$Pair.Name==pair2plot,17:19]),as.numeric(fsgs_net[fsgs_net$Pair.Name==pair2plot,20:22]),c("podo","mesa","endo"))
+```
+
+
