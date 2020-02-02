@@ -13,4 +13,4 @@ Now talklr is ready for use!
 Alternatively, you can use the talklr Shiny App that does not require any programming experience. talklr App is available at:  
 https://yuliangwang.shinyapps.io/talklr/  
 If you use talklr in your work, please cite the paper below:  
-Yuliang Wang. (2020). Talklr uncovers ligand-receptor mediated intercellular crosstalk. bioRxiv, 2020.02.01.930602. doi:10.1101/2020.02.01.930602
+Yuliang Wang. (2020). talklr uncovers ligand-receptor mediated intercellular crosstalk. bioRxiv, 2020.02.01.930602. doi:10.1101/2020.02.01.930602
