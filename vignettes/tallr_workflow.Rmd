@@ -32,9 +32,9 @@ head(lr_glom_normal)
 ```
 We can then visualize the ligand-receptor wiring diagram for any of the top ligand-receptor pairs identified by talklr.  
 ```{r}
-plot_lr_wiring(as.numeric(lr_glom_normal[1,17:19]),as.numeric(lr_glom_normal[1,20:22]),c("podo","mesa","endo"))
+plot_lr_wiring(as.numeric(lr_glom_normal[1,17:19]),as.numeric(lr_glom_normal[1,20:22]),c("podo","mesa","endo"),1)
 
-plot_lr_wiring(as.numeric(lr_glom_normal[2,17:19]),as.numeric(lr_glom_normal[2,20:22]),c("podo","mesa","endo"))
+plot_lr_wiring(as.numeric(lr_glom_normal[2,17:19]),as.numeric(lr_glom_normal[2,20:22]),c("podo","mesa","endo"),1)
 ```  
 
 ###Optional: comparison with differentially expressed gene-based approach  
@@ -68,9 +68,9 @@ Finally, we can then visualize rewiring of ligand-receptor pairs between two con
 pair2plot<-'CCL2_ACKR2' 
 par(mfrow=c(1,2))
 par(mar = c(0.3, 0.3, 0.3, 0.3))
-plot_lr_wiring(as.numeric(normal_net[normal_net$Pair.Name==pair2plot,17:19]),as.numeric(normal_net[normal_net$Pair.Name==pair2plot,20:22]),c("podo","mesa","endo"))
+plot_lr_wiring(as.numeric(normal_net[normal_net$Pair.Name==pair2plot,17:19]),as.numeric(normal_net[normal_net$Pair.Name==pair2plot,20:22]),c("podo","mesa","endo"),1)
 
-plot_lr_wiring(as.numeric(fsgs_net[fsgs_net$Pair.Name==pair2plot,17:19]),as.numeric(fsgs_net[fsgs_net$Pair.Name==pair2plot,20:22]),c("podo","mesa","endo"))
+plot_lr_wiring(as.numeric(fsgs_net[fsgs_net$Pair.Name==pair2plot,17:19]),as.numeric(fsgs_net[fsgs_net$Pair.Name==pair2plot,20:22]),c("podo","mesa","endo"),1)
 ```
 
 
