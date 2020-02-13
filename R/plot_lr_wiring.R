@@ -6,11 +6,11 @@
 #' @param cell_labels character vector of cell type names
 #' @return a plot of the ligand-receptor wiring diagram
 #' @export
-plot_lr_wiring<-function(ligand_exprs,receptor_exprs,cell_labels){
+plot_lr_wiring<-function(ligand_exprs,receptor_exprs,cell_labels,thresh){
   n_cell<-length(cell_labels)
   norm_mat<-matrix(0,n_cell,n_cell)
-  ligand_exprs[ligand_exprs<1]<- 0 #if not expressed, set to 0
-  receptor_exprs[receptor_exprs<1]<- 0
+  ligand_exprs[ligand_exprs<thresh]<- 0 #if not expressed, set to 0
+  receptor_exprs[receptor_exprs<thresh]<- 0
   for (i in 1:n_cell){
     norm_mat[i,]<-ligand_exprs[i]*receptor_exprs
   }
